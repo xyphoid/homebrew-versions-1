@@ -1,13 +1,13 @@
 class Postgresql93 < Formula
   desc "Object-relational database system"
   homepage "http://www.postgresql.org/"
-  url "http://ftp.postgresql.org/pub/source/v9.3.9/postgresql-9.3.9.tar.bz2"
-  sha256 "f73bd0ec2028511732430beb22414a022d2114231366e8cbe78c149793910549"
+  url "https://ftp.postgresql.org/pub/source/v9.3.12/postgresql-9.3.12.tar.bz2"
+  sha256 "f3339ea23f86d07f3730adc878b2e5d433087ff44aad65a5ec9c22c32b112e67"
 
   bottle do
-    sha256 "70ea1f08bfc9b37df07074e103726a0f4ca13a28898bc849f09556b8ceca732c" => :yosemite
-    sha256 "f4bd484e2bf510a2b1e1b413a79496ffd3250e501f61af87738aed827181a6ea" => :mavericks
-    sha256 "a029295e7590100d8d2d902266cbffa36a2baff5014ff1515f96470c6f4cf99d" => :mountain_lion
+    sha256 "eeda21ec9830809a3c29dc5dc6d24b875e423351cff11fb015165e6b978c454d" => :el_capitan
+    sha256 "ca5918c94401b432a003e478855e8d7ac4d7d1497a8f036f258fec26537f9b04" => :yosemite
+    sha256 "4ef78228d9908a440ff2c01c3f1442e922bbc48abd725c256df297f9fd427fc9" => :mavericks
   end
 
   option "32-bit"
@@ -38,6 +38,9 @@ class Postgresql93 < Formula
 
   def install
     ENV.libxml2 if MacOS.version >= :snow_leopard
+
+  ENV.prepend "LDFLAGS", "-L#{Formula["openssl"].opt_lib} -L#{Formula["readline"].opt_lib}"
+  ENV.prepend "CPPFLAGS", "-I#{Formula["openssl"].opt_include} -I#{Formula["readline"].opt_include}"
 
     args = %W[
       --disable-debug

@@ -1,14 +1,14 @@
 class Gnupg21 < Formula
   desc "GNU Privacy Guard: a free PGP replacement"
   homepage "https://www.gnupg.org/"
-  url "https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.1.7.tar.bz2"
-  mirror "https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.7.tar.bz2"
-  sha256 "c18a3776d47fec98892d51d28b6574ef16bf0a25eabb0956231058aaf2e7846e"
+  url "https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.1.11.tar.bz2"
+  mirror "https://www.mirrorservice.org/sites/ftp.gnupg.org/gcrypt/gnupg/gnupg-2.1.11.tar.bz2"
+  sha256 "b7b0fb2c8c5d47d7ec916d4a1097c0ddcb94a12bb1c0ac424ad86b1ee316b61a"
 
   bottle do
-    sha256 "7b5aac9339c455c60b5d448f961d27c9d0c060ff6bd009378c9b1186727072b0" => :yosemite
-    sha256 "61b3aae731595a3e7e876b077650ed3b5e1a32066e40397b3482350c84bbd0b0" => :mavericks
-    sha256 "959f1a344912cfbcb8c152245a565f650b89e10c88d2727e3ff374a168266517" => :mountain_lion
+    sha256 "725cb9cebd07ca0ab9ea56a5742c765b77f0eed17f7c4428b575c40eea35ac8b" => :el_capitan
+    sha256 "a699c10bc5324df5b88cd1612b7aa9c4b841986d7438eed542a4b59816cf41e2" => :yosemite
+    sha256 "8c43114c858a4975c0fd1b3b52703e2be6b4ac2d8a40fb89dd9366db425b39a0" => :mavericks
   end
 
   head do
@@ -22,17 +22,19 @@ class Gnupg21 < Formula
   option "with-gpgsplit", "Additionally install the gpgsplit utility"
 
   depends_on "pkg-config" => :build
+  depends_on "sqlite" => :build if MacOS.version == :mavericks
   depends_on "npth"
   depends_on "gnutls"
-  depends_on "homebrew/fuse/encfs" => :optional
   depends_on "libgpg-error"
   depends_on "libgcrypt"
   depends_on "libksba"
   depends_on "libassuan"
   depends_on "pinentry"
+  depends_on "gettext"
+  depends_on "adns"
   depends_on "libusb-compat" => :recommended
   depends_on "readline" => :optional
-  depends_on "gettext"
+  depends_on "homebrew/fuse/encfs" => :optional
 
   conflicts_with "gnupg2",
         :because => "GPG2.1.x is incompatible with the 2.0.x branch."
@@ -58,6 +60,7 @@ class Gnupg21 < Formula
       --sbindir=#{bin}
       --sysconfdir=#{etc}
       --enable-symcryptrun
+      --with-pinentry-pgm=#{Formula["pinentry"].opt_bin}/pinentry
     ]
 
     args << "--with-readline=#{Formula["readline"].opt_prefix}" if build.with? "readline"
@@ -75,8 +78,6 @@ class Gnupg21 < Formula
       s.gsub! "PACKAGE_TARNAME='gnupg'", "PACKAGE_TARNAME='gnupg2'"
     end
 
-    inreplace "tools/gpgkey2ssh.c", "gpg --list-keys", "gpg2 --list-keys"
-
     system "./configure", *args
 
     system "make"
@@ -85,10 +86,7 @@ class Gnupg21 < Formula
 
     bin.install "tools/gpgsplit" => "gpgsplit2" if build.with? "gpgsplit"
 
-    # Conflicts with a manpage from the 1.x formula, and
-    # gpg-zip isn't installed by this formula anyway
-    rm man1/"gpg-zip.1"
-    # Move more man conflict out of 1.x's way.
+    # Move man files that conflict with 1.x.
     mv share/"doc/gnupg2/FAQ", share/"doc/gnupg2/FAQ21"
     mv share/"doc/gnupg2/examples/gpgconf.conf", share/"doc/gnupg2/examples/gpgconf21.conf"
     mv share/"info/gnupg.info", share/"info/gnupg21.info"

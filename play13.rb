@@ -1,17 +1,13 @@
 class Play13 < Formula
-  homepage "http://www.playframework.org/"
-  url "http://downloads.typesafe.com/play/1.3.1/play-1.3.1.zip"
-  sha256 "9dae87f659cca29cd0144ef58491b714072ccb786eef4ccfa7741da1a2301ec0"
+  desc "Play’s goal is to ease Java web applications development."
+  homepage "https://www.playframework.com"
+  url "https://downloads.typesafe.com/play/1.3.4/play-1.3.4.zip"
+  sha256 "a97a4a70e48df578206fd6660e3f83aa1442d6f85b79429e7b6a7c08ac1fc8d1"
 
-  bottle do
-    cellar :any
-    sha256 "341d8fb3a7d0ff51913fe9524c585560342e2705b7b291c25493125836da6890" => :yosemite
-    sha256 "e745f863eac2cf9de688c5a832f9d7cd6d07fcbc67147c9135ecbd41b6276e2d" => :mavericks
-    sha256 "d255f3f91e8394d3f71e275b92099c8d7c0e72554af4a2aacd4138d5aa5128fb" => :mountain_lion
-  end
+  bottle :unneeded
 
   conflicts_with "sox", :because => "Both install a `play` executable"
-  conflicts_with "play12", :because => "Both install a `play` executable"
+  conflicts_with "play14", :because => "Both install a `play` executable"
   conflicts_with "play22", :because => "Both install a `play` executable"
 
   def install

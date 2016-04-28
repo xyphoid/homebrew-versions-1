@@ -1,9 +1,12 @@
 class JenkinsLts < Formula
-  homepage "http://jenkins-ci.org/#stable"
-  url "http://mirrors.jenkins-ci.org/war-stable/1.609.3/jenkins.war"
-  sha256 "d5017fc3db8ac118dcd28c33e8414bd036ed236d8011276f683a074422a4c4d0"
+  desc "Extendable open-source CI server"
+  homepage "https://jenkins.io/index.html#stable"
+  url "http://mirrors.jenkins-ci.org/war-stable/1.651.1/jenkins.war"
+  sha256 "863533451e49ec480f010ac5815421d39708597ffbbce7ce67c54f0145428500"
 
-  depends_on :java => "1.6+"
+  bottle :unneeded
+
+  depends_on :java => "1.7+"
 
   conflicts_with "jenkins",
     :because => "both use the same data directory: $HOME/.jenkins"
@@ -29,7 +32,7 @@ class JenkinsLts < Formula
           <string>/usr/bin/java</string>
           <string>-Dmail.smtp.starttls.enable=true</string>
           <string>-jar</string>
-          <string>#{opt_prefix}/libexec/jenkins.war</string>
+          <string>#{opt_libexec}/jenkins.war</string>
           <string>--httpListenAddress=127.0.0.1</string>
           <string>--httpPort=8080</string>
         </array>
@@ -43,5 +46,20 @@ class JenkinsLts < Formula
   def caveats; <<-EOS.undent
     Note: When using launchctl the port will be 8080.
     EOS
+  end
+
+  test do
+    ENV["JENKINS_HOME"] = testpath
+    pid = fork do
+      exec "#{bin}/jenkins-lts"
+    end
+    sleep 60
+
+    begin
+      assert_match /"mode":"NORMAL"/, shell_output("curl localhost:8080/api/json")
+    ensure
+      Process.kill("SIGINT", pid)
+      Process.wait(pid)
+    end
   end
 end

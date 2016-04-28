@@ -2,13 +2,14 @@
 class Node010 < Formula
   desc "Platform built on V8 to build network applications"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v0.10.40/node-v0.10.40.tar.gz"
-  sha256 "bae79c2fd959aebe1629af36077bebbb760128db753da226d2344cd91499149f"
+  url "https://nodejs.org/dist/v0.10.44/node-v0.10.44.tar.xz"
+  sha256 "25b2cd910822723e972a3990d5687b7ff48581ad2f77aa1942d99a1b024f434a"
+  head "https://github.com/nodejs/node.git", :branch => "v0.10-staging"
 
   bottle do
-    sha256 "e4242ae9393f9a103ddd64cd01d18f3d5b5a9cbb476d29921a2ad9502a7b6397" => :yosemite
-    sha256 "738a4e3db5efcf9165b2f896e2ba589f1098a7f16dea695cddc12a5c8d92f8f4" => :mavericks
-    sha256 "bfa978f1da864b66080244fd2485ad67d58cf4f78cb9d6f4c60781a08733dfaf" => :mountain_lion
+    sha256 "35237c192b4b7b7444acbf08e83c8372b1853c28c8459272f5351565aff2151f" => :el_capitan
+    sha256 "775b307bce8467e2353f449c14d8e48b5178241152a9cfe53c299c0689834890" => :yosemite
+    sha256 "ce9605beb9e00b13372dffecacd932490452850f061d3896d5d7bc342a7d2850" => :mavericks
   end
 
   deprecated_option "enable-debug" => "with-debug"
@@ -25,8 +26,8 @@ class Node010 < Formula
   end
 
   resource "npm" do
-    url "https://registry.npmjs.org/npm/-/npm-2.12.1.tgz"
-    sha256 "6b6512c6f9097da193dfe046053d6d0483b5c5658dc0a763c1ba5609b6bbc16c"
+    url "https://registry.npmjs.org/npm/-/npm-2.15.1.tgz"
+    sha256 "e3435100b37379354b899a31d073ef81b8aa7365c52eb138847ecfbf9f01ea93"
   end
 
   conflicts_with "node",
@@ -39,7 +40,7 @@ class Node010 < Formula
     if build.with? "openssl"
       args << "--shared-openssl"
     else
-      args << "--without-ssl2" << "--without-ssl3"
+      args << "--without-ssl3"
     end
 
     system "./configure", *args
@@ -57,9 +58,16 @@ class Node010 < Formula
       # set log level temporarily for npm's `make install`
       ENV["NPM_CONFIG_LOGLEVEL"] = "verbose"
 
+      # unset prefix temporarily for npm's `make install`
+      ENV.delete "NPM_CONFIG_PREFIX"
+
       cd buildpath/"npm_install" do
         system "./configure", "--prefix=#{libexec}/npm"
         system "make", "install"
+        # Remove manpage symlinks from the buildpath, they are breaking bottle
+        # creation. The real manpages are living in libexec/npm/lib/node_modules/npm/man/
+        # https://github.com/Homebrew/homebrew/pull/47081#issuecomment-165280470
+        rm_rf libexec/"npm/share/"
       end
 
       if build.with? "completion"
@@ -118,9 +126,8 @@ class Node010 < Formula
     path = testpath/"test.js"
     path.write "console.log('hello');"
 
-    output = `#{bin}/node #{path}`.strip
+    output = shell_output("#{bin}/node #{path}").strip
     assert_equal "hello", output
-    assert_equal 0, $?.exitstatus
 
     if build.with? "npm"
       # make sure npm can find node

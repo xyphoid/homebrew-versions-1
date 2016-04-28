@@ -1,15 +1,17 @@
-class AndroidNdkR10c < Formula
+class AndroidNdkR10d < Formula
+  desc "Android native-code language toolset"
   homepage "https://developer.android.com/sdk/ndk/index.html"
+  version "r10d"
 
   if MacOS.prefer_64_bit?
-    url "https://dl.google.com/android/ndk/android-ndk-r10c-darwin-x86_64.bin"
-    sha256 "420079521294dc81e532b34bb4ffe8c94c14dbad15696f0a662fbdbea298c17b"
+    url "https://dl.google.com/android/ndk/android-ndk-r10d-darwin-x86_64.bin"
+    sha256 "46e6d0249012d926996616709f9fdd2d4506309309c19e3ab7468f7ab04b0ddc"
   else
-    url "https://dl.google.com/android/ndk/android-ndk-r10c-darwin-x86.bin"
-    sha256 "19a7437a047a9200e40ec52bd5144b2492db0e1b7a5381c7988e645b42bf7d74"
+    url "https://dl.google.com/android/ndk/android-ndk-r10d-darwin-x86.bin"
+    sha256 "f1eb62d3a256f1339978b96b05bd3d7195debbf07b2d1e8a887d2f2b468d6cc7"
   end
 
-  version "r10c"
+  bottle :unneeded
 
   depends_on "android-sdk" => :recommended
 
@@ -52,5 +54,9 @@ class AndroidNdkR10c < Formula
     For more documentation on Android NDK, please check:
       #{prefix}/docs
     EOS
+  end
+
+  test do
+    assert_match /Usage/, shell_output("#{bin}/ndk-build --help")
   end
 end

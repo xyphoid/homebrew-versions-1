@@ -1,9 +1,11 @@
-class ApacheSpark131 < Formula
+class ApacheSpark15 < Formula
   desc "Engine for large-scale data processing"
-  homepage "https://spark.apache.org/"
-  url "https://d3kbcqa49mib13.cloudfront.net/spark-1.3.1-bin-hadoop2.6.tgz"
-  version "1.3.1"
-  sha256 "a25aaf58cfb3c64e3c77bdf9dde1a61247846d60519dd28b18d60d162d19c79a"
+  homepage "https://spark.apache.org"
+  url "https://d3kbcqa49mib13.cloudfront.net/spark-1.5.2-bin-hadoop2.6.tgz"
+  version "1.5.2"
+  sha256 "409c4b34f196acc5080b893b0579cda000c192fc4cc9336009395b2a559b676e"
+
+  bottle :unneeded
 
   conflicts_with "apache-spark", :because => "Differing version of same formula"
 

@@ -10,24 +10,25 @@ class Thrift090 < Formula
 
   bottle do
     cellar :any
-    sha256 "dea7ccc0fb965a709abddfad87d5ecb886e0b5d2f4618622d320f259bccf7aed" => :yosemite
-    sha256 "a9b9bf0bb4039b83d80b617d20f9a185b2f771c4e72284843c29253bd3fbbdcb" => :mavericks
-    sha256 "9c83d58ec3c0b0dc1477dc5c3496ba793893441790e7827e5020a5e775e993d5" => :mountain_lion
+    revision 1
+    sha256 "f655ec1f7bfec1b92b805394bee8495f5fb169ae46a0a7f3fec15d367983acba" => :el_capitan
+    sha256 "ae37814213b3f3c6089784c26a008dd9159005fa1cd1625c169e45b57bf97d16" => :yosemite
+    sha256 "dc59998ede12cd4dd30bbaf9689b17bc12f44f2e9a198e1e55e91305e55e5678" => :mavericks
   end
 
   # These patches are 0.9.0-specific and can go away once a newer version is release
   [
     # patch-tsocket.patch
-    %w[ca4565122f0a1365f2409bce85dc0b8942459b18 a1dc9e54ffacf04c6ba6d1e37b734684ff09d149a88ca7425a4237267f674829],
+    %w[a1dc9e54ffacf04c6ba6d1e37b734684ff09d149a88ca7425a4237267f674829 tsocket.patch],
     # patch-cxx11-compat.patch
-    %w[8ab0d22b3df198e6b7a14e9da6fd34d2d6218cbf 74fd5282f159bf4d7ee5ca977b36534e2182709fe4c17cc5907c6bd615cfe0ef],
+    %w[74fd5282f159bf4d7ee5ca977b36534e2182709fe4c17cc5907c6bd615cfe0ef cxx11-compat.patch],
     # patch-use-boost-cpp-client-server.patch
-    %w[50629b8ac1fb3d606185f39cfd7b6a4848e3a93d 2ea5a69c5358a56ef945d4fb127c11a7797afc751743b20f58dfff0955a68117],
+    %w[2ea5a69c5358a56ef945d4fb127c11a7797afc751743b20f58dfff0955a68117 use-boost-cpp-client-server.patch],
     # patch-remove-tr1-dependency.patch
-    %w[7bf1cd9deb7b483845458e901c37ad4d8404a8e7 c4419ce40b7fda9ffd58a5dad7856b64ee84e3c1b820f3a64fed0b01b4bc9c42],
-  ].each do |hash, sha|
+    %w[c4419ce40b7fda9ffd58a5dad7856b64ee84e3c1b820f3a64fed0b01b4bc9c42 remove-tr1-dependency.patch]
+  ].each do |sha, patch|
     patch do
-      url "https://gist.githubusercontent.com/rafaelverger/58b6eeafaae7d28b06cc/raw/#{hash}"
+      url "https://raw.githubusercontent.com/Homebrew/patches/dee880b1baba827255f7b0806ca32d36c4d1c2ca/thrift/0.9.0/#{patch}"
       sha256 sha
     end
   end

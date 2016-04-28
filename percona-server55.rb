@@ -1,25 +1,29 @@
 class PerconaServer55 < Formula
+  desc "Drop-in MySQL replacement"
   homepage "http://www.percona.com"
   url "http://www.percona.com/downloads/Percona-Server-5.5/Percona-Server-5.5.41-37.0/source/tarball/percona-server-5.5.41-37.0.tar.gz"
   version "5.5.41-37.0"
-  sha1 "74610892ba6402e8df04320db444d6dcc7cb2fe8"
+  sha256 "4de65ccbdd6c266f18339c2ea5427a15d90a8ce1ce1c7574aa2e72f685a10833"
 
   bottle do
-    sha1 "4c765fa7e77cea212481b9916c140ae7eb7dac9f" => :yosemite
-    sha1 "c03ce1fad24f4aa7574c291ddf28e86695d8c0d5" => :mavericks
-    sha1 "1d2f86b8c062a965a28e246f9d0957855c20b883" => :mountain_lion
+    revision 1
+    sha256 "0485e4b85ec43cc8692a289005ea11437dd0b6f1de81ca5be4e5e889c774b8b1" => :el_capitan
+    sha256 "458885d3ae1d69671f3db47ba67e12345dc477fa133c12004dfedb6f906f8102" => :yosemite
+    sha256 "f3cc42afd6def0a236696d10366ab4f98f9894caefdc9538f21b9b0ef202b734" => :mavericks
   end
-
-  depends_on "cmake" => :build
-  depends_on "readline"
-  depends_on "pidof"
-  depends_on "openssl"
 
   option :universal
   option "with-tests", "Build with unit tests"
   option "with-embedded", "Build the embedded server"
   option "with-libedit", "Compile with editline wrapper instead of readline"
-  option "enable-local-infile", "Build with local infile loading support"
+  option "with-local-infile", "Build with local infile loading support"
+
+  deprecated_option "enable-local-infile" => "with-local-infile"
+
+  depends_on "cmake" => :build
+  depends_on "readline"
+  depends_on "pidof"
+  depends_on "openssl"
 
   conflicts_with "mysql",
     :because => "percona-server55 and mysql install the same binaries."
@@ -70,7 +74,7 @@ class PerconaServer55 < Formula
       # PAM plugin is Linux-only at the moment
       "-DWITHOUT_AUTH_PAM=1",
       "-DWITHOUT_AUTH_PAM_COMPAT=1",
-      "-DWITHOUT_DIALOG=1"
+      "-DWITHOUT_DIALOG=1",
     ]
 
     # To enable unit testing at build, we need to download the unit testing suite
@@ -114,6 +118,7 @@ class PerconaServer55 < Formula
     ln_s "#{prefix}/support-files/mysql.server", bin
 
     # Move mysqlaccess to libexec
+    libexec.mkpath
     mv "#{bin}/mysqlaccess", libexec
     mv "#{bin}/mysqlaccess.conf", libexec
   end

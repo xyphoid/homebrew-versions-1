@@ -21,24 +21,24 @@ class Gcc5 < Formula
 
   desc "The GNU Compiler Collection"
   homepage "https://gcc.gnu.org"
-  url "http://ftpmirror.gnu.org/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2"
-  mirror "https://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2"
-  sha256 "5f835b04b5f7dd4f4d2dc96190ec1621b8d89f2dc6f638f9f8bc1b1014ba8cad"
+  url "http://ftpmirror.gnu.org/gcc/gcc-5.3.0/gcc-5.3.0.tar.bz2"
+  mirror "https://ftp.gnu.org/gnu/gcc/gcc-5.3.0/gcc-5.3.0.tar.bz2"
+  sha256 "b84f5592e9218b73dbae612b5253035a7b34a9a1f7688d2e1bfaaf7267d5c4db"
 
   bottle do
-    sha256 "e70e8ce3ef7b1a9ec3677c34cad3480d985042b88909568c140dddfbdfa8dca2" => :yosemite
-    sha256 "8dfd614540e36459c57c095292f7ad687249ad3530d7f95f690fb4e6629bdbea" => :mavericks
-    sha256 "56a3d0e3a79b365fc366a43616faa5e30da4d8a5cb6bbc58d611f98d22f9c080" => :mountain_lion
+    sha256 "896f62585ec928f4bbc42b3dbfde809a50677d1df32cb174af0e5922cdad7f78" => :el_capitan
+    sha256 "628684893059907f833d28ccaa1327c94b4c64e7a1078154bac76ce530267011" => :yosemite
+    sha256 "1b174123b543c436be5c726fc2c46e38268e5d3fc2b38c451f8e6169052bfbda" => :mavericks
   end
 
   # GCC's Go compiler is not currently supported on Mac OS X.
   # See: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=46986
-  option "with-fortran", "Build the gfortran compiler"
   option "with-java", "Build the gcj compiler"
   option "with-all-languages", "Enable all compilers and languages, except Ada"
   option "with-nls", "Build with native language support (localization)"
   option "with-profiled-build", "Make use of profile guided optimization when bootstrapping GCC"
   option "with-jit", "Build the jit compiler"
+  option "without-fortran", "Build without the gfortran compiler"
   # enabling multilib on a host that can"t run 64-bit results in build failures
   option "without-multilib", "Build without multilib support" if MacOS.prefer_64_bit?
 
@@ -65,7 +65,7 @@ class Gcc5 < Formula
   # GCC bootstraps itself, so it is OK to have an incompatible C++ stdlib
   cxxstdlib_check :skip
 
-  # Fix for libgccjit.so linkage on Darwin
+  # Fix for libgccjit.so linkage on Darwin.
   # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=64089
   patch :DATA
 
@@ -196,6 +196,7 @@ class Gcc5 < Formula
     assert_equal "Hello, world!\n", `./hello-c`
   end
 end
+
 __END__
 --- a/gcc/jit/Make-lang.in	2015-02-03 17:19:58.000000000 +0000
 +++ b/gcc/jit/Make-lang.in	2015-04-08 22:08:24.000000000 +0100

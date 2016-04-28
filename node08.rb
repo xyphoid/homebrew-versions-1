@@ -1,14 +1,13 @@
 class Node08 < Formula
   desc "Platform built on V8 to build network applications"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v0.8.26/node-v0.8.26.tar.gz"
-  sha256 "d873216685774b96139af534ce015077d2c93ddfc4e3596e128853f3c08a5413"
-  revision 4
+  url "https://nodejs.org/dist/v0.8.28/node-v0.8.28.tar.gz"
+  sha256 "50e9a4282a741c923bd41c3ebb76698edbd7b1324024fe70cedc1e34b782d44f"
 
   bottle do
-    sha256 "1c6f050a5a431e52f9734b081cf1986495a667e4e42d9d6813b2bc105564ee9f" => :yosemite
-    sha256 "0408da3d54dc20c365c3c018d040e9aac208fa96e3f58038188bcb9793a0430d" => :mavericks
-    sha256 "e9eeda21f549315674d327c595a356bd4ae06446d4cc94d0edc77aefb640e570" => :mountain_lion
+    sha256 "f6bd80020b36c6558891c3046978b863e4252f5308d006e697e040a2827a7757" => :el_capitan
+    sha256 "3f6e33df20eece207138af79b7fb323c41ef91d38d97f096f749fafa557cd8af" => :yosemite
+    sha256 "e4fa19c0d05ba11914f8faac32bf5b990f015e55e5ee60be7fb4145c96798b36" => :mavericks
   end
 
   option "with-debug", "Build with debugger hooks"
@@ -27,13 +26,9 @@ class Node08 < Formula
   end
 
   resource "npm" do
-    url "https://registry.npmjs.org/npm/-/npm-2.12.1.tgz"
-    sha256 "6b6512c6f9097da193dfe046053d6d0483b5c5658dc0a763c1ba5609b6bbc16c"
+    url "https://registry.npmjs.org/npm/-/npm-2.14.4.tgz"
+    sha256 "c8b602de5d51f956aa8f9c34d89be38b2df3b7c25ff6588030eb8224b070db27"
   end
-
-  # Fixes double-free issue. See https://github.com/joyent/node/issues/6427
-  # Should be fixed if they ever do a v0.8 release.
-  patch :DATA
 
   conflicts_with "node",
     :because => "Differing versions of the same formulae."
@@ -44,7 +39,7 @@ class Node08 < Formula
     #
     #   https://code.google.com/p/gyp/issues/detail?id=292
     #   joyent/node#3681
-    ENV["DEVELOPER_DIR"] = MacOS.dev_tools_path unless MacOS::Xcode.installed?
+    ENV["DEVELOPER_DIR"] = "#{OS::Mac.active_developer_dir}/usr/bin" unless MacOS::Xcode.installed?
 
     args = %W[--prefix=#{prefix} --without-npm --shared-openssl]
 
@@ -135,19 +130,3 @@ class Node08 < Formula
     end
   end
 end
-
-__END__
-diff --git a/deps/v8/src/spaces.h b/deps/v8/src/spaces.h
-index b0ecc5d..d76d77d 100644
---- a/deps/v8/src/spaces.h
-+++ b/deps/v8/src/spaces.h
-@@ -321,7 +321,8 @@ class MemoryChunk {
-   Space* owner() const {
-     if ((reinterpret_cast<intptr_t>(owner_) & kFailureTagMask) ==
-         kFailureTag) {
--      return reinterpret_cast<Space*>(owner_ - kFailureTag);
-+      return reinterpret_cast<Space*>(reinterpret_cast<intptr_t>(owner_) -
-+                                      kFailureTag);
-     } else {
-       return NULL;
-     }

@@ -1,15 +1,10 @@
-class Elasticsearch12 < Formula
+class Elasticsearch17 < Formula
+  desc "Distributed search & analytics engine"
   homepage "https://www.elastic.co/products/elasticsearch"
-  url "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.2.4.tar.gz"
-  sha256 "07c298cb4dae634a2514f6022cd28533be0d86e3a2d0ad75ee6f24ff49b2e22f"
+  url "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.5.tar.gz"
+  sha256 "0aa58947d66b487488e86059352deb7c6cab5da4accdff043cce9fed7c3d2fa7"
 
-  bottle do
-    cellar :any
-    revision 1
-    sha256 "ac1cb4d7b023d175ba2b28a7564375f4170bc723bdd9edc00f6e49092ffdd2c0" => :yosemite
-    sha256 "62e62ad012f3689c02d226d70ba5ea440a9832909abcd148cea17ba47fdfb9d7" => :mavericks
-    sha256 "e7ae3287bd80f05f3fb9cc655e8762e10a20225b90aba1717a046579e09c29e7" => :mountain_lion
-  end
+  bottle :unneeded
 
   depends_on :java => "1.7+"
 
@@ -35,7 +30,7 @@ class Elasticsearch12 < Formula
     # Set up Elasticsearch for local development:
     inreplace "#{prefix}/config/elasticsearch.yml" do |s|
       # 1. Give the cluster a unique name
-      s.gsub! /#\s*cluster\.name\: elasticsearch/, "cluster.name: #{cluster_name}"
+      s.gsub!(/#\s*cluster\.name\: elasticsearch/, "cluster.name: #{cluster_name}")
 
       # 2. Configure paths
       s.sub!(%r{#\s*path\.data: /path/to.+$}, "path.data: #{var}/elasticsearch/")
@@ -43,7 +38,7 @@ class Elasticsearch12 < Formula
       s.sub!(%r{#\s*path\.plugins: /path/to.+$}, "path.plugins: #{var}/lib/elasticsearch/plugins")
 
       # 3. Bind to loopback IP for laptops roaming different networks
-      s.gsub! /#\s*network\.host\: [^\n]+/, "network.host: 127.0.0.1"
+      s.gsub!(/#\s*network\.host\: [^\n]+/, "network.host: 127.0.0.1")
     end
 
     inreplace "#{bin}/elasticsearch.in.sh" do |s|
@@ -66,16 +61,18 @@ class Elasticsearch12 < Formula
     (var/"elasticsearch/#{cluster_name}").mkpath
     (var/"log/elasticsearch").mkpath
     (var/"lib/elasticsearch/plugins").mkpath
+    ln_s etc/"elasticsearch", prefix/"config"
   end
 
   def caveats; <<-EOS.undent
     Data:    #{var}/elasticsearch/#{cluster_name}/
     Logs:    #{var}/log/elasticsearch/#{cluster_name}.log
     Plugins: #{var}/lib/elasticsearch/plugins/
+    Config:  #{etc}/elasticsearch/
     EOS
   end
 
-  plist_options :manual => "elasticsearch --config=#{HOMEBREW_PREFIX}/opt/elasticsearch12/config/elasticsearch.yml"
+  plist_options :manual => "elasticsearch --config=#{HOMEBREW_PREFIX}/opt/elasticsearch17/config/elasticsearch.yml"
 
   def plist; <<-EOS.undent
       <?xml version="1.0" encoding="UTF-8"?>
@@ -101,9 +98,9 @@ class Elasticsearch12 < Formula
           <key>WorkingDirectory</key>
           <string>#{var}</string>
           <key>StandardErrorPath</key>
-          <string>/dev/null</string>
+          <string>#{var}/log/elasticsearch17.log</string>
           <key>StandardOutPath</key>
-          <string>/dev/null</string>
+          <string>#{var}/log/elasticsearch17.log</string>
         </dict>
       </plist>
     EOS

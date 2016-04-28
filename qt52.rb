@@ -1,4 +1,5 @@
 class Qt52 < Formula
+  desc "Cross-platform application and UI framework"
   homepage "https://www.qt.io/"
   url "https://download.qt.io/official_releases/qt/5.2/5.2.1/single/qt-everywhere-opensource-src-5.2.1.tar.gz"
   sha256 "84e924181d4ad6db00239d87250cc89868484a14841f77fb85ab1f1dbdcd7da1"
@@ -91,14 +92,14 @@ class Qt52 < Formula
     Pathname.glob("#{bin}/*.app") { |app| mv app, prefix }
   end
 
-  test do
-    system "#{bin}/qmake", "-project"
-  end
-
   def caveats; <<-EOS.undent
     We agreed to the Qt opensource license for you.
     If this is unacceptable you should uninstall.
     EOS
+  end
+
+  test do
+    system "#{bin}/qmake", "-project"
   end
 end
 
