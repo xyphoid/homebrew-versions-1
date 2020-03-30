@@ -1,4 +1,4 @@
-class Solr4 < Formula
+class Solrnew4 < Formula
   desc "Enterprise search platform from Apache Lucene project"
   homepage "https://lucene.apache.org/solr/"
   url "https://archive.apache.org/dist/lucene/solr/4.10.4/solr-4.10.4.tgz"
