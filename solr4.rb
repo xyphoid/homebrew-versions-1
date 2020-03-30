@@ -6,8 +6,6 @@ class Solr4 < Formula
 
   depends_on :java
 
-  conflicts_with "solr", :because => "Differing versions of same formula"
-
   skip_clean "example/logs"
 
   def install
